@@ -36,7 +36,6 @@
             <canvas id="riskChart" class="w-full" style="height:420px;"></canvas>
           </div>
 
-          <!-- legend removed; chart now fills the area -->
         </div>
       </div>
     </div>
@@ -74,8 +73,6 @@
     badge.style.background = `linear-gradient(180deg, ${colorForScore(score)}, rgba(0,0,0,0.06))`;
     badge.style.color = '#071123';
     badge.textContent = score + '%';
-
-    // legend removed — no DOM element to update
 
     // Breakdown
     const breakdown = document.getElementById('breakdownList');
