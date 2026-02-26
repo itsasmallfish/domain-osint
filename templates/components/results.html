@@ -67,7 +67,8 @@
 
     const clamp = v => Math.max(0, Math.min(100, Number(v) || 0));
     const values = metrics.map(m => clamp(scanData[m.key]));
-    const avg = Math.round(values.reduce((a,b)=>a+b,0)/values.length);
+    const computedAvg = Math.round(values.reduce((a,b)=>a+b,0)/values.length);
+    const score = scanData.score
 
     function colorForScore(s){
       const p = Math.max(0, Math.min(1, s/100));
@@ -77,11 +78,11 @@
 
     // Badge styling
     const badge = document.getElementById('scoreBadge');
-    badge.style.background = `linear-gradient(180deg, ${colorForScore(avg)}, rgba(0,0,0,0.06))`;
+    badge.style.background = `linear-gradient(180deg, ${colorForScore(score)}, rgba(0,0,0,0.06))`;
     badge.style.color = '#071123';
-    badge.textContent = avg + '%';
+    badge.textContent = score + '%';
 
-    document.getElementById('legendScore').textContent = avg + '/100';
+    document.getElementById('legendScore').textContent = score + '/100';
 
     // Breakdown
     const breakdown = document.getElementById('breakdownList');
@@ -116,9 +117,9 @@
           data: values,
           fill: true,
           backgroundColor: g,
-          borderColor: colorForScore(avg),
+          borderColor: colorForScore(score),
           borderWidth: 2,
-          pointBackgroundColor: colorForScore(avg),
+          pointBackgroundColor: colorForScore(score),
           pointBorderColor: '#0b1220',
           pointBorderWidth: 2,
           pointRadius: 5,

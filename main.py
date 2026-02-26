@@ -23,6 +23,12 @@ async def scan(request: Request, domain: str = Form(...)):
         "exposure": 100,
         "rep": 100,
     }
+
+    # compute overall score (average of metrics), clamp to 0-100
+    vals = [mock_data.get(k, 0) for k in ("ssl", "dns", "surface", "exposure", "rep")]
+    total = round(sum(vals) / len(vals)) if vals else 0
+    total = max(0, min(100, int(total)))
+    mock_data["score"] = total
     
     return templates.TemplateResponse("components/results.html", {
         "request": request, 
