@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="p-10 bg-base-300 min-h-screen">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+        <header class="text-center">
+            <h1 class="text-4xl font-bold text-primary">GhostScan OSINT</h1>
+            <p class="text-base-content/70">Analyze domain security posture instantly</p>
+        </header>
+
+        <div class="bg-base-100 p-6 rounded-2xl shadow-xl">
+            <form hx-post="/scan" hx-target="#results-area" hx-indicator="#loading-spinner">
+                <div class="flex gap-2">
+                    <input type="text" name="domain" placeholder="example.com" 
+                           class="input input-bordered w-full focus:input-primary" required />
+                    <button type="submit" class="btn btn-primary">
+                        Analyze Target
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="loading-spinner" class="htmx-indicator flex flex-col items-center gap-4">
+            <span class="loading loading-ball loading-lg text-primary"></span>
+            <p>Gathering intelligence...</p>
+        </div>
+
+        <div id="results-area">
+            <div class="alert shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>Enter a domain above to start the investigation.</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
