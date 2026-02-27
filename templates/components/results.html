@@ -1,10 +1,14 @@
-<div class="p-6 rounded-2xl text-base-content font-sans">
+<div 
+  class="p-6 rounded-2xl text-base-content font-sans"
+  id="data-container"
+  data-values="{{ data | tojson | forceescape }}"
+>
   <div class="max-w-4xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
       <!-- Summary -->
       <div class="md:col-span-1 card bg-base-100 border border-base-200/10 shadow p-5">
         <div class="flex items-center gap-4">
-          <div id="scoreBadge" class="w-24 h-24 rounded-full flex items-center justify-center font-bold text-lg shadow-md"></div>
+          <div id="scoreBadge" hx-preserve class="w-24 h-24 rounded-full flex items-center justify-center font-bold text-lg shadow-md"></div>
           <div>
             <h3 class="text-lg font-semibold text-base-content">Overall Risk</h3>
             <p class="text-sm text-base-content/70 mt-1">Combined domain security score — 0 (safe) to 100 (high risk).</p>
@@ -32,127 +36,12 @@
         </div>
 
         <div class="mt-4 flex items-stretch">
-          <div class="bg-transparent rounded-lg p-3" style="min-height:420px;">
-            <canvas id="riskChart" class="w-full" style="height:420px;"></canvas>
+          <div class="bg-transparent rounded-lg p-3 w-full" style="min-height:420px;">
+            <canvas hx-preserve id="riskChart"></canvas>
           </div>
 
         </div>
       </div>
     </div>
   </div>
-
-  <script id="chart-data" type="application/json">
-    {{ data | tojson | safe }}
-  </script>
-
-  <script>
-    const rawData = document.getElementById('chart-data').textContent;
-    const scanData = JSON.parse(rawData);
-
-    const metrics = [
-      { key: 'ssl', label: 'SSL/TLS' },
-      { key: 'dns', label: 'DNS' },
-      { key: 'surface', label: 'Surface' },
-      { key: 'rep', label: 'Reputation' },
-      { key: 'exposure', label: 'Exposure' }
-    ];
-
-    const clamp = v => Math.max(0, Math.min(100, Number(v) || 0));
-    const values = metrics.map(m => clamp(scanData[m.key]));
-    const computedAvg = Math.round(values.reduce((a,b)=>a+b,0)/values.length);
-    const score = scanData.score
-
-    function colorForScore(s){
-      const p = Math.max(0, Math.min(1, s/100));
-      const h = (1 - p) * 120; // green (120) -> red (0)
-      return `hsl(${h}deg 85% 55%)`;
-    }
-
-    // Badge styling
-    const badge = document.getElementById('scoreBadge');
-    badge.style.background = `linear-gradient(180deg, ${colorForScore(score)}, rgba(0,0,0,0.06))`;
-    badge.style.color = '#071123';
-    badge.textContent = score + '%';
-
-    // Breakdown
-    const breakdown = document.getElementById('breakdownList');
-    metrics.forEach((m,i)=>{
-      const val = values[i];
-      const row = document.createElement('div');
-      row.className = 'flex items-center gap-3';
-      row.innerHTML = `
-        <div class="w-28 text-sm text-base-content/80">${m.label}</div>
-        <div class="flex-1 bg-base-200/10 rounded-full h-2 overflow-hidden">
-          <div style="width:${val}%;height:100%;background:linear-gradient(90deg, ${colorForScore(val)}, rgba(255,255,255,0.06));"></div>
-        </div>
-        <div class="w-10 text-right text-sm text-base-content/70">${val}</div>
-      `;
-      breakdown.appendChild(row);
-    });
-
-    document.getElementById('refreshBtn').addEventListener('click', ()=> location.reload());
-
-    // Chart.js
-    const ctx = document.getElementById('riskChart').getContext('2d');
-    const g = ctx.createLinearGradient(0,0,0,420);
-    g.addColorStop(0, 'rgba(220,38,38,0.18)');
-    g.addColorStop(1, 'rgba(220,38,38,0.06)');
-
-    new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels: metrics.map(m=>m.label),
-        datasets: [{
-          label: 'Risk Score',
-          data: values,
-          fill: true,
-          backgroundColor: g,
-          borderColor: colorForScore(score),
-          borderWidth: 2,
-          pointBackgroundColor: colorForScore(score),
-          pointBorderColor: '#0b1220',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        elements: { line: { tension: 0.35 } },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(6,10,23,0.95)',
-            titleFont: { size: 13, weight: '600' },
-            bodyFont: { size: 13 },
-            padding: 10,
-            cornerRadius: 6,
-            callbacks: {
-              label: (ctx)=> `${ctx.label}: ${ctx.parsed.r}/100`
-            }
-          }
-        },
-        scales: {
-          r: {
-            min: 0,
-            max: 100,
-            beginAtZero: true,
-            ticks: { 
-              stepSize: 20, 
-              color: 'rgba(203,213,225,0.92)', 
-              font: { size: 11 }, 
-              backdropColor: 'transparent',
-              callback: function(value, index, ticks) {
-                        return "  "+ value + "%";
-                    },
-            },
-            grid: { color: 'rgba(255,255,255,0.12)' },
-            angleLines: { color: 'rgba(255,255,255,0.3)' },
-            pointLabels: { color: 'rgba(226,232,240,0.95)', font: { size: 12 } }
-          }
-        }
-      }
-    });
-  </script>
 </div>
