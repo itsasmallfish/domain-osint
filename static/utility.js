@@ -8,7 +8,7 @@ const metrics = [
 
 function colorForScore(s){
   const p = Math.max(0, Math.min(1, s/100));
-  const h = (1 - p) * 120; // green (120) -> red (0)
+  const h = p * 120; // red (0) -> green (120): high score = good health
   return `hsl(${h}deg 85% 55%)`;
 }
 

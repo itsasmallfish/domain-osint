@@ -24,5 +24,4 @@ function createBreakdown(values,score) {
     breakdown.appendChild(row);
   });
     
-  document.getElementById('refreshBtn').addEventListener('click', ()=> location.reload()); 
 }

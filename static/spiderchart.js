@@ -9,15 +9,15 @@ function createChart(values,score) {
   
   let ctx = document.getElementById('riskChart').getContext('2d');
   let g = ctx.createLinearGradient(0,0,0,420);
-  g.addColorStop(0, 'rgba(220,38,38,0.18)');
-  g.addColorStop(1, 'rgba(220,38,38,0.06)');
+  g.addColorStop(0, 'rgba(34,197,94,0.18)');
+  g.addColorStop(1, 'rgba(34,197,94,0.06)');
   
   chart = new Chart(ctx, {
     type: 'radar',
     data: {
       labels: metrics.map(m=>m.label),
       datasets: [{
-        label: 'Risk Score',
+        label: 'Safety Health Score',
         data: values,
         fill: true,
         backgroundColor: g,
