@@ -3,6 +3,8 @@ let chart = null
 function createChart(values,score) {
   if (chart) {
     chart.data.datasets[0].data = values;
+    chart.data.datasets[0].borderColor = colorForScore(score)
+    chart.data.datasets[0].pointBackgroundColor = colorForScore(score)
     chart.update();
     return;
   }
