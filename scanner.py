@@ -60,7 +60,7 @@ class DomainScanner:
         try:
             # Using the crt.sh JSON API (no key needed!)
             url = f"https://crt.sh/?q={self.domain}&output=json"
-            response = requests.get(url, timeout=10)
+            response = requests.get(url)
             if response.status_code == 200:
                 data = response.json()
                 unique_subs = len(set(item['name_value'] for item in data))
